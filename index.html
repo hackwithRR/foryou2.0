@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Official Kulli Marriage Portal 📜💍</title>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600;900&family=Dancing+Script:wght@700&family=Cinzel:wght@700&display=swap" rel="stylesheet">
+
+<style>
+/* ---------- BASE STYLES ---------- */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+    font-family:'Poppins',sans-serif;
+    background: linear-gradient(135deg, #ffc0cb 0%, #ff9acb 100%);
+    min-height:100vh; overflow-x:hidden; color: #444;
+}
+.screen{display:none; min-height:100vh; padding:20px; justify-content:center; align-items:center; flex-direction:column; text-align:center;}
+.active{display:flex}
+
+/* ---------- ELEGANT MARRIAGE AGREEMENT ---------- */
+#agreementModal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    display: none; align-items: center; justify-content: center; z-index: 100000; padding: 15px;
+}
+.parchment {
+    background: #fdf5e6;
+    background-image: radial-gradient(#fffdf5 1px, transparent 0);
+    background-size: 20px 20px;
+    width: 100%; max-width: 550px;
+    padding: 40px; border-radius: 4px;
+    box-shadow: 0 0 40px rgba(0,0,0,0.5), inset 0 0 100px rgba(212, 175, 55, 0.2);
+    border: 2px solid #d4af37; position: relative;
+}
+.parchment::before {
+    content: ''; position: absolute; inset: 10px;
+    border: 1px solid #d4af37; pointer-events: none;
+}
+.legal-header { font-family: 'Cinzel', serif; color: #8b0000; letter-spacing: 2px; border-bottom: 2px solid #8b0000; margin-bottom: 20px; }
+.legal-text { font-family: 'Dancing Script', cursive; font-size: 19px; line-height: 1.6; color: #333; margin-bottom: 20px; text-align: left; }
+
+#sig-pad { border: 1px dashed #b30059; background: white; cursor: crosshair; touch-action: none; width: 100%; border-radius: 8px; }
+
+/* ---------- HEIGHT CHECK MODAL ---------- */
+#heightModal {
+    position: fixed; inset: 0; background: rgba(255,105,180,0.9);
+    display: none; align-items: center; justify-content: center; z-index: 100001;
+}
+.height-card {
+    background: white; padding: 30px; border-radius: 30px; width: 90%; max-width: 400px;
+    box-shadow: 0 20px 0 #d02090; text-align: center;
+}
+.scanner-line {
+    width: 100%; height: 4px; background: hotpink;
+    box-shadow: 0 0 15px hotpink; position: relative;
+    animation: scan 2s infinite alternate ease-in-out;
+}
+@keyframes scan { from { top: 0; } to { top: 150px; } }
+
+/* ---------- BUTTONS ---------- */
+button {
+    padding: 16px 32px; border: none; border-radius: 50px; font-weight: 900;
+    cursor: pointer; transition: 0.3s; margin: 10px; text-transform: uppercase;
+}
+.btn-gold { background: #d4af37; color: white; box-shadow: 0 4px 0 #b8860b; }
+.btn-pink { background: hotpink; color: white; box-shadow: 0 4px 0 #d02090; }
+button:active { transform: translateY(4px); box-shadow: none; }
+
+/* ---------- GALLERY ---------- */
+.gallery-grid {
+    display:grid; grid-template-columns:repeat(auto-fit, minmax(100px, 1fr));
+    gap:10px; width:100%; max-width:600px; margin-top: 20px;
+}
+.gallery-grid img { width:100%; height:110px; object-fit:cover; border-radius:15px; border:3px solid white; cursor:pointer; }
+
+.floating-heart{position:fixed; bottom:-50px; animation:floatUp 5s linear infinite; z-index:1; pointer-events: none;}
+@keyframes floatUp { to { transform: translateY(-110vh) rotate(360deg); opacity: 0; } }
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop><source src="love.mp3"></audio>
+
+<div class="screen active" id="loading">
+    <h1 style="font-family:'Pacifico'; color:white; font-size: 3rem;">Kulli Hub 🔒</h1>
+    <div style="width: 250px; height: 12px; background: rgba(255,255,255,0.4); border-radius: 10px; overflow: hidden; margin: 20px;">
+        <div id="bar" style="width: 0%; height: 100%; background: white; transition: 2s;"></div>
+    </div>
+    <p style="color:white; font-weight: 900;">Verifying Choo Cute Credentials...</p>
+</div>
+
+<div id="heightModal">
+    <div class="height-card">
+        <h2 style="color: hotpink;">📏 Height Verification</h2>
+        <p style="font-size: 12px; margin-bottom: 20px;">Place your forehead against the screen for "Bio-Metric" measuring...</p>
+        <div style="height: 150px; background: #fff0f5; position: relative; margin-bottom: 20px; border-radius: 10px; overflow: hidden;">
+            <div class="scanner-line"></div>
+            <div id="resultText" style="margin-top: 60px; font-weight: 900; color: #b30059; display:none;">RESULT: 4'11" (Nugget)</div>
+        </div>
+        <button class="btn-pink" id="scanBtn" onclick="startScan()">Start Bio-Scan</button>
+        <button class="btn-pink" id="continueBtn" style="display:none;" onclick="openAgreement()">Accept & Proceed 🙄</button>
+    </div>
+</div>
+
+<div id="agreementModal">
+    <div class="parchment">
+        <h2 class="legal-header">Deed of Eternal Union</h2>
+        <div class="legal-text">
+            Be it known to all, that the party known as <b>Samanvitha (The Kulli)</b>, being of sound (but choo cute) mind, hereby enters a life-long partnership with <b>The Hubby</b>.<br><br>
+            1. The Kulli shall provide 1000 hugs per day.<br>
+            2. The Kulli accepts that she is indeed smol. Blehh! 😜<br>
+            3. All jokes made by Hubby must be met with "Okieeee".<br><br>
+            <i>Sign below to finalize your Valentine status:</i>
+        </div>
+        <canvas id="sig-pad" width="400" height="120" style="width:100%; height:100px;"></canvas>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+            <div style="text-align: left; font-size: 10px; font-weight: 900;">
+                <p>WITNESS:</p>
+                <p style="font-family:'Dancing Script'; font-size: 20px; color:#d4af37;">The Hubby ❤️</p>
+            </div>
+            <button class="btn-gold" onclick="finishAgreement()">Execute Deed 💍</button>
+        </div>
+    </div>
+</div>
+
+<div class="screen" id="final">
+    <h1 style="font-family:'Pacifico'; font-size: 2rem;">Welcome, My Wifey! 🎀</h1>
+    <img src="yay.jpeg" style="width:160px; border-radius:50%; border: 5px solid white; margin: 15px 0;">
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 450px;">
+        <button class="btn-pink" onclick="showScreen('letter')">The Note 💌</button>
+        <button class="btn-pink" onclick="showScreen('gallery')">Memories 📸</button>
+        <button class="btn-gold" onclick="spawnEmoji('💋')">Kiss 💋</button>
+        <button class="btn-gold" onclick="spawnEmoji('🫂')">Hug 🫂</button>
+    </div>
+    <p style="margin-top: 20px; font-weight: 900; font-size: 12px; color: #b30059;">Agreement status: LEGALLY BOUND. Blehh! 😜</p>
+</div>
+
+<div class="screen" id="letter">
+    <h1>To My Kulli ❤️</h1>
+    <div id="loveLetter" style="background:white; padding:25px; border-radius:20px; text-align:left; max-width:500px; border:2px dashed hotpink; font-weight: 600;"></div>
+    <button class="btn-pink" onclick="startTypewriter()">Read ❤️</button>
+    <button class="btn-gold" onclick="showScreen('final')">Okieeee, back</button>
+</div>
+
+<div class="screen" id="gallery">
+    <h1>Our Choo Cute Story 📸</h1>
+    <div class="gallery-grid">
+        <img src="photo1.jpg" onclick="openLbox(this)"><img src="photo2.jpg" onclick="openLbox(this)"><img src="photo3.jpg" onclick="openLbox(this)">
+        <img src="photo4.jpg" onclick="openLbox(this)"><img src="photo5.jpeg" onclick="openLbox(this)"><img src="photo6.jpeg" onclick="openLbox(this)">
+        <img src="photo7.jpeg" onclick="openLbox(this)"><img src="photo8.jpeg" onclick="openLbox(this)"><img src="photo9.jpg" onclick="openLbox(this)">
+        <img src="photo10.jpeg" onclick="openLbox(this)"><img src="photo11.jpeg" onclick="openLbox(this)"><img src="photo12.jpeg" onclick="openLbox(this)">
+    </div>
+    <button class="btn-gold" onclick="showScreen('final')" style="margin-top: 20px;">Back to Hub</button>
+</div>
+
+<div id="lbox" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); display:none; align-items:center; justify-content:center; z-index:200000;" onclick="this.style.display='none'"><img id="lboxImg" style="max-width:90%; border-radius:10px; border: 4px solid hotpink;"></div>
+
+<script>
+/* --- INITIAL --- */
+window.onload = () => {
+    document.getElementById('bar').style.width = "100%";
+    setTimeout(() => {
+        document.getElementById('loading').style.display = "none";
+        document.getElementById('heightModal').style.display = "flex";
+    }, 2200);
+};
+
+/* --- HEIGHT SCAN --- */
+function startScan() {
+    const btn = document.getElementById('scanBtn');
+    btn.innerText = "Scanning Height...";
+    setTimeout(() => {
+        document.getElementById('resultText').style.display = "block";
+        btn.style.display = "none";
+        document.getElementById('continueBtn').style.display = "inline-block";
+    }, 2500);
+}
+
+/* --- AGREEMENT --- */
+function openAgreement() {
+    document.getElementById('heightModal').style.display = "none";
+    document.getElementById('agreementModal').style.display = "flex";
+    initCanvas();
+}
+
+let canvas, ctx, drawing = false;
+function initCanvas() {
+    canvas = document.getElementById('sig-pad'); ctx = canvas.getContext('2d');
+    ctx.strokeStyle = "#1a2a6c"; ctx.lineWidth = 3;
+    const start = () => drawing = true;
+    const end = () => { drawing = false; ctx.beginPath(); };
+    const draw = (e) => {
+        if(!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = (e.clientX || e.touches[0].clientX) - rect.left;
+        const y = (e.clientY || e.touches[0].clientY) - rect.top;
+        ctx.lineTo(x, y); ctx.stroke(); ctx.beginPath(); ctx.moveTo(x, y);
+    };
+    canvas.addEventListener('mousedown', start); canvas.addEventListener('mousemove', draw); window.addEventListener('mouseup', end);
+    canvas.addEventListener('touchstart', start); canvas.addEventListener('touchmove', (e)=>{e.preventDefault(); draw(e.touches[0])}); canvas.addEventListener('touchend', end);
+}
+
+function finishAgreement() {
+    document.getElementById('agreementModal').style.display = "none";
+    showScreen('final');
+    spawnEmoji('✨'); spawnEmoji('🌸');
+}
+
+/* --- CORE LOGIC --- */
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+function spawnEmoji(emoji) {
+    for(let i=0; i<15; i++) {
+        const e = document.createElement("div"); e.className = "floating-heart"; e.textContent = emoji;
+        e.style.left = Math.random() * 100 + "vw"; e.style.fontSize = "25px";
+        e.style.animationDuration = (2 + Math.random() * 2) + "s";
+        document.body.appendChild(e); setTimeout(()=>e.remove(), 4000);
+    }
+}
+
+function openLbox(img) { document.getElementById('lboxImg').src = img.src; document.getElementById('lbox').style.display = 'flex'; }
+
+const letterText = `Happy Valentine's Day, my Choo Cute Kulli! ❤️\n\nNow that you've been measured and have signed the deed, there is officially no escape! 💍\n\nYou are the choo cutest nugget in the world and I am so lucky to call you mine. Thank you for saying okieeee to all my madness. I love you choo choo much! 💋\n\nBlehh! 😜`;
+let idx = 0;
+function startTypewriter() {
+    const el = document.getElementById('loveLetter'); el.innerHTML = ""; idx = 0;
+    function type() { if(idx < letterText.length){ el.innerHTML += letterText[idx] === "\n" ? "<br>" : letterText[idx]; idx++; setTimeout(type, 35); } }
+    type();
+}
+document.addEventListener("click", () => document.getElementById('music').play(), {once:true});
+</script>
+
+</body>
+</html>
